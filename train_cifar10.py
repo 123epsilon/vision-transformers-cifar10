@@ -46,14 +46,22 @@ parser.add_argument('--n_epochs', type=int, default='200')
 parser.add_argument('--patch', default='4', type=int, help="patch for ViT")
 parser.add_argument('--dimhead', default="512", type=int)
 parser.add_argument('--convkernel', default='8', type=int, help="parameter for convmixer")
+parser.add_argument('--block', default='16', type=int, help="block size for sparse attention layouts")
+parser.add_argument('--windowsizes', action='append', type=int, nargs='+', help="window sizes for sparse attention layouts")
 
 args = parser.parse_args()
+
+print("GPU Available: ", torch.cuda.is_available())
+# print(args.windowsizes[0])
 
 # take in args
 usewandb = ~args.nowandb
 if usewandb:
     import wandb
     watermark = "{}_lr{}".format(args.net, args.lr)
+    if 'sliding' in args.net or 'strided' in args.net:
+        watermark = "{}_lr{}_w{}".format(args.net, args.lr, args.block, args.windowsizes[0])
+    
     wandb.init(project="cifar10-challange",
             name=watermark)
     wandb.config.update(args)
@@ -178,6 +186,34 @@ elif args.net=="vit":
     mlp_dim = 512,
     dropout = 0.1,
     emb_dropout = 0.1
+)
+elif args.net=="vit_sliding":
+    # ViT for cifar10
+    net = ViTMaskSliding(
+    image_size = size,
+    patch_size = args.patch,
+    num_classes = 10,
+    dim = int(args.dimhead),
+    depth = 6,
+    heads = 8,
+    mlp_dim = 512,
+    dropout = 0.1,
+    emb_dropout = 0.1,
+    window_sizes = args.window_sizes[0]
+)
+elif args.net=="vit_strided":
+    # ViT for cifar10
+    net = ViTMaskStrided(
+    image_size = size,
+    patch_size = args.patch,
+    num_classes = 10,
+    dim = int(args.dimhead),
+    depth = 6,
+    heads = 8,
+    mlp_dim = 512,
+    dropout = 0.1,
+    emb_dropout = 0.1,
+    window_sizes = args.window_sizes[0]
 )
 elif args.net=="vit_timm":
     import timm
@@ -304,7 +340,7 @@ def test(epoch):
               "scaler": scaler.state_dict()}
         if not os.path.isdir('checkpoint'):
             os.mkdir('checkpoint')
-        torch.save(state, './checkpoint/'+args.net+'-{}-ckpt.t7'.format(args.patch))
+        torch.save(state, f'./checkpoint/'+args.net+'-patch{args.patch}-lr{args.lr}-window{args.windowsizes[0]}-ckpt.t7')
         best_acc = acc
     
     os.makedirs("log", exist_ok=True)
