@@ -64,7 +64,7 @@ class SparseFixedInceptionAttention(nn.Module):
 		# mask along each head separately
 		for i in range(dots.size(1)):
 		  attention_mask = self.get_attention_mask(x.size(1), num_neighbors=self.window_sizes[i]//2)
-		  attenton_mask = attention_mask.to(dots.device)
+		  attention_mask = attention_mask.to(dots.device)
 		  dots[:,i] = dots[:,i].masked_fill_(attention_mask == 0, float('-inf'))
 
 		attn = self.attend(dots)
