@@ -86,6 +86,7 @@ class SparseFixedInceptionAttention(nn.Module):
 class Transformer(nn.Module):
 	def __init__(self, dim, depth, heads, dim_head, mlp_dim, dropout = 0., window_sizes=[]):
 		super().__init__()
+		assert len(window_sizes) == heads
 		self.layers = nn.ModuleList([])
 		for _ in range(depth):
 			self.layers.append(nn.ModuleList([
@@ -121,7 +122,7 @@ class ViTMaskSliding(nn.Module):
 		self.cls_token = nn.Parameter(torch.randn(1, 1, dim))
 		self.dropout = nn.Dropout(emb_dropout)
 
-		self.transformer = Transformer(dim, depth, heads, dim_head, mlp_dim, dropout)
+		self.transformer = Transformer(dim, depth, heads, dim_head, mlp_dim, dropout, window_sizes=window_sizes)
 
 		self.pool = pool
 		self.to_latent = nn.Identity()

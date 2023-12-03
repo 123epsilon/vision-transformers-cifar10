@@ -66,9 +66,9 @@ class SparseStridedInceptionAttention(nn.Module):
 		  attention_mask = self.get_attention_mask(x.size(1), window_size=self.window_sizes[i])
 		  dots[:,i].masked_fill_(attention_mask == 0, float('-inf'))
 
-		print(dots)
+		# print(dots)
 		attn = self.attend(dots)
-		print(attn)
+		# print(attn)
 		out = torch.matmul(attn, v)
 		out = rearrange(out, 'b h n d -> b n (h d)')
 		return self.to_out(out)
@@ -90,6 +90,7 @@ class SparseStridedInceptionAttention(nn.Module):
 class Transformer(nn.Module):
 	def __init__(self, dim, depth, heads, dim_head, mlp_dim, dropout = 0., window_sizes=[]):
 		super().__init__()
+		assert len(window_sizes) == heads
 		self.layers = nn.ModuleList([])
 		for _ in range(depth):
 			self.layers.append(nn.ModuleList([
@@ -125,7 +126,7 @@ class ViTMaskStrided(nn.Module):
 		self.cls_token = nn.Parameter(torch.randn(1, 1, dim))
 		self.dropout = nn.Dropout(emb_dropout)
 
-		self.transformer = Transformer(dim, depth, heads, dim_head, mlp_dim, dropout)
+		self.transformer = Transformer(dim, depth, heads, dim_head, mlp_dim, dropout, window_sizes)
 
 		self.pool = pool
 		self.to_latent = nn.Identity()
