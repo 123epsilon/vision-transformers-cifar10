@@ -201,7 +201,7 @@ elif args.net=="vit_sliding":
     mlp_dim = 512,
     dropout = 0.1,
     emb_dropout = 0.1,
-    window_sizes = args.window_sizes[0]
+    window_sizes = args.windowsizes[0]
 )
 elif args.net=="vit_strided":
     # ViT for cifar10
@@ -215,7 +215,7 @@ elif args.net=="vit_strided":
     mlp_dim = 512,
     dropout = 0.1,
     emb_dropout = 0.1,
-    window_sizes = args.window_sizes[0]
+    window_sizes = args.windowsizes[0]
 )
 elif args.net=="vit_timm":
     import timm
