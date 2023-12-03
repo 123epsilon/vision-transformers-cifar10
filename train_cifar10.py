@@ -29,8 +29,8 @@ from utils import progress_bar
 from randomaug import RandAugment
 from models.vit import ViT
 from models.convmixer import ConvMixer
-from models.vit_sliding import ViTMaskSliding
-from models.vit_strided import ViTMaskStrided
+from models.vit_mask_sliding import ViTMaskSliding
+from models.vit_mask_strided import ViTMaskStrided
 
 # parsers
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
