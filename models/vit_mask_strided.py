@@ -64,6 +64,7 @@ class SparseStridedInceptionAttention(nn.Module):
 		# mask along each head separately
 		for i in range(dots.size(1)):
 		  attention_mask = self.get_attention_mask(x.size(1), window_size=self.window_sizes[i])
+		  attenton_mask = attention_mask.to(dots.device)
 		  dots[:,i].masked_fill_(attention_mask == 0, float('-inf'))
 
 		# print(dots)
