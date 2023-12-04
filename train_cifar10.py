@@ -62,7 +62,7 @@ if usewandb:
     import wandb
     watermark = "{}_lr{}".format(args.net, args.lr)
     if 'sliding' in args.net or 'strided' in args.net:
-        watermark = "{}_lr{}_w{}".format(args.net, args.lr, args.block, args.windowsizes[0])
+        watermark = "{}_lr{}_w{}".format(args.net, args.lr, args.block, args.windowsizes)
     
     wandb.init(project="cifar10-challange",
             name=watermark)
