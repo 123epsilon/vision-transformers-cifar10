@@ -45,6 +45,7 @@ parser.add_argument('--net', default='vit')
 parser.add_argument('--bs', default='512')
 parser.add_argument('--size', default="32")
 parser.add_argument('--n_epochs', type=int, default='200')
+parser.add_argument('--depth', default='6', type=int, help="number layers for ViT")
 parser.add_argument('--patch', default='4', type=int, help="patch for ViT")
 parser.add_argument('--dimhead', default="512", type=int)
 parser.add_argument('--convkernel', default='8', type=int, help="parameter for convmixer")
@@ -60,9 +61,9 @@ print("GPU Available: ", torch.cuda.is_available())
 usewandb = ~args.nowandb
 if usewandb:
     import wandb
-    watermark = "{}_lr{}".format(args.net, args.lr)
+    watermark = "{}_lr{}_d{}".format(args.net, args.lr, args.depth)
     if 'sliding' in args.net or 'strided' in args.net:
-        watermark = "{}_lr{}_w{}".format(args.net, args.lr, args.windowsizes[0])
+        watermark = "{}_lr{}_d{}_w{}".format(args.net, args.lr, args.depth, args.windowsizes[0])
     
     wandb.init(project="cifar10-challange",
             name=watermark)
@@ -183,7 +184,7 @@ elif args.net=="vit":
     patch_size = args.patch,
     num_classes = 10,
     dim = int(args.dimhead),
-    depth = 6,
+    depth = args.depth,
     heads = 8,
     mlp_dim = 512,
     dropout = 0.1,
@@ -196,7 +197,7 @@ elif args.net=="vit_sliding":
     patch_size = args.patch,
     num_classes = 10,
     dim = int(args.dimhead),
-    depth = 6,
+    depth = args.depth,
     heads = 8,
     mlp_dim = 512,
     dropout = 0.1,
@@ -210,7 +211,7 @@ elif args.net=="vit_strided":
     patch_size = args.patch,
     num_classes = 10,
     dim = int(args.dimhead),
-    depth = 6,
+    depth = args.depth,
     heads = 8,
     mlp_dim = 512,
     dropout = 0.1,
