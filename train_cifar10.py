@@ -45,6 +45,7 @@ parser.add_argument('--net', default='vit')
 parser.add_argument('--bs', default='512')
 parser.add_argument('--size', default="32")
 parser.add_argument('--n_epochs', type=int, default='200')
+parser.add_argument('--heads', type=int, default='8', help="number of attention heads in each layer for ViT")
 parser.add_argument('--depth', default='6', type=int, help="number layers for ViT")
 parser.add_argument('--patch', default='4', type=int, help="patch for ViT")
 parser.add_argument('--dimhead', default="512", type=int)
@@ -185,7 +186,7 @@ elif args.net=="vit":
     num_classes = 10,
     dim = int(args.dimhead),
     depth = args.depth,
-    heads = 8,
+    heads = args.heads,
     mlp_dim = 512,
     dropout = 0.1,
     emb_dropout = 0.1
@@ -198,7 +199,7 @@ elif args.net=="vit_sliding":
     num_classes = 10,
     dim = int(args.dimhead),
     depth = args.depth,
-    heads = 8,
+    heads = args.heads,
     mlp_dim = 512,
     dropout = 0.1,
     emb_dropout = 0.1,
@@ -212,7 +213,7 @@ elif args.net=="vit_strided":
     num_classes = 10,
     dim = int(args.dimhead),
     depth = args.depth,
-    heads = 8,
+    heads = args.heads,
     mlp_dim = 512,
     dropout = 0.1,
     emb_dropout = 0.1,
